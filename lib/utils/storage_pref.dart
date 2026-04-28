@@ -60,6 +60,11 @@ abstract final class Pref {
     ),
   );
 
+    static double get videoSidePanelWidth => _setting.get(
+        SettingBoxKey.videoSidePanelWidth,
+        defaultValue: 0.42,
+    );
+
   static Set<int> get blackMids =>
       _localCache.get(LocalCacheKey.blackMids, defaultValue: <int>{});
 

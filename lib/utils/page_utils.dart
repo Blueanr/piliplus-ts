@@ -31,6 +31,7 @@ import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/url_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:floating/floating.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -505,7 +506,7 @@ abstract final class PageUtils {
           }
           return SafeArea(
             child: FractionallySizedBox(
-              widthFactor: 0.5,
+              widthFactor: Pref.videoSidePanelWidth,
               heightFactor: 1.0,
               alignment: Alignment.centerRight,
               child: child,
@@ -526,6 +527,43 @@ abstract final class PageUtils {
             ),
             child: child,
           );
+        },
+        settings: RouteSettings(arguments: Get.arguments),
+      ),
+    );
+  }
+
+  static Future<T?>? showVideoSidePanel<T>(
+    BuildContext context, {
+    required Widget child,
+    required ValueGetter<bool> isFullScreen,
+    double? padding,
+  }) {
+    if (!context.mounted) {
+      return null;
+    }
+    return Get.key.currentState!.push(
+      _VideoSidePanelRoute<T>(
+        builder: (context) {
+          final panel = context.isPortrait
+              ? FractionallySizedBox(
+                  heightFactor: 0.7,
+                  widthFactor: 1.0,
+                  alignment: Alignment.bottomCenter,
+                  child: isFullScreen() && padding != null
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: padding),
+                          child: child,
+                        )
+                      : child,
+                )
+              : FractionallySizedBox(
+                  widthFactor: 0.5,
+                  heightFactor: 1.0,
+                  alignment: Alignment.centerRight,
+                  child: child,
+                );
+          return SafeArea(child: panel);
         },
         settings: RouteSettings(arguments: Get.arguments),
       ),
@@ -808,4 +846,15 @@ abstract final class PageUtils {
       );
     }
   }
+}
+
+class _VideoSidePanelRoute<T> extends CupertinoPageRoute<T> {
+  _VideoSidePanelRoute({
+    required super.builder,
+    super.settings,
+    super.fullscreenDialog = false,
+  });
+
+  @override
+  bool get opaque => false;
 }

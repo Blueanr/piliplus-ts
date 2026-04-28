@@ -239,7 +239,7 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      PageUtils.showVideoBottomSheet(
+      PageUtils.showVideoSidePanel(
         context,
         isFullScreen: () => false,
         child: VideoReplyReplyPanel(

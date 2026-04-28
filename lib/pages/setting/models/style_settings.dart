@@ -136,6 +136,13 @@ List<SettingsModel> get styleSettings => [
         '当前: 主页${Pref.recommendCardWidth.toInt()}dp 其他${Pref.smallCardWidth.toInt()}dp，屏幕宽度:${MediaQuery.widthOf(Get.context!).toPrecision(2)}dp。宽度越小列数越多。',
     onTap: _showCardWidthDialog,
   ),
+  NormalModel(
+    leading: const Icon(Icons.view_sidebar_outlined),
+    title: '右侧面板宽度（横屏）',
+    getSubtitle: () =>
+        '当前：${(Pref.videoSidePanelWidth * 100).toStringAsFixed(0)}%，仅影响UP详情、评论详情、对话列表等右侧面板。',
+    onTap: _showSidePanelWidthDialog,
+  ),
   const SwitchModel(
     title: '播放页移除安全边距',
     leading: Icon(Icons.fit_screen_outlined),
@@ -698,6 +705,30 @@ Future<void> _showCardWidthDialog(
       SettingBoxKey.smallCardWidth: res.$2,
     });
     SmartDialog.showToast('重启生效');
+    setState();
+  }
+}
+
+Future<void> _showSidePanelWidthDialog(
+  BuildContext context,
+  VoidCallback setState,
+) async {
+  final res = await showDialog<double>(
+    context: context,
+    builder: (context) => SliderDialog(
+      title: '右侧面板宽度（横屏）',
+      value: Pref.videoSidePanelWidth * 100,
+      min: 30,
+      max: 70,
+      divisions: 40,
+      suffix: '%',
+      precise: 0,
+    ),
+  );
+  if (res != null) {
+    final width = (res / 100).clamp(0.30, 0.70).toDouble();
+    await GStorage.setting.put(SettingBoxKey.videoSidePanelWidth, width);
+    SmartDialog.showToast('设置成功');
     setState();
   }
 }

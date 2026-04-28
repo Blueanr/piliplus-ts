@@ -2099,7 +2099,7 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   }
 
   void onShowMemberPage(int? mid) {
-    PageUtils.showVideoBottomSheet(
+    PageUtils.showVideoSidePanel(
       context,
       isFullScreen: () => false,
       child: HorizontalMemberPage(

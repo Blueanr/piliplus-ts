@@ -135,6 +135,7 @@ abstract final class SettingBoxKey {
       enableLog = 'enableLog',
       memberTab = 'memberTab',
       dynamicDetailRatio = 'dynamicDetailRatio',
+      videoSidePanelWidth = 'videoSidePanelWidth',
       directExitOnBack = 'directExitOnBack',
       quickFavId = 'quickFavId',
       showFsScreenshotBtn = 'showFsScreenshotBtn',

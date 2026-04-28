@@ -350,7 +350,7 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
       onReply: (replyItem) => _controller.onReply(replyItem, index: index),
       onDelete: (item, subIndex) => _controller.onRemove(index, item, null),
       upMid: _controller.upMid,
-      showDialogue: () => PageUtils.showVideoBottomSheet(
+      showDialogue: () => PageUtils.showVideoSidePanel(
         context,
         isFullScreen: () => false,
         child: VideoReplyReplyPanel(
