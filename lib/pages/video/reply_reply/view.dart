@@ -17,6 +17,7 @@ import 'package:PiliPlus/utils/num_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -57,39 +58,35 @@ class VideoReplyReplyPanel extends CommonSlidePage {
     Uri? uri,
   }) {
     final rpId = rpIdStr == null ? null : int.tryParse(rpIdStr);
-    return Get.to(
-      arguments: {
-        'oid': oid,
-        'rpid': rootId,
-        'id': ?rpId,
-        'type': type,
-        'enterUri': ?uri?.toString(), // save panel
-      },
-      () => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: const Text('评论详情'),
-          actions: [
-            IconButton(
-              tooltip: '前往',
-              onPressed: uri == null
-                  ? null
-                  : () => PiliScheme.routePush(uri, businessId: type),
-              icon: const Icon(Icons.open_in_browser),
-            ),
-          ],
-        ),
-        body: ViewSafeArea(
-          child: VideoReplyReplyPanel(
-            enableSlide: false,
-            oid: oid,
-            rpid: rootId,
-            isVideoDetail: false,
-            replyType: type,
-            firstFloor: null,
-            id: rpId,
+    return Get.key.currentState?.push(
+      CupertinoPageRoute(
+        settings: RouteSettings(name: 'replyDetail'),
+        builder: (context) => Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text('评论详情'),
+            actions: [
+              IconButton(
+                tooltip: '前往',
+                onPressed: uri == null
+                    ? null
+                    : () => PiliScheme.routePush(uri, businessId: type),
+                icon: const Icon(Icons.open_in_browser),
+              ),
+            ],
           ),
-        ).constraintWidth(),
+          body: ViewSafeArea(
+            child: VideoReplyReplyPanel(
+              enableSlide: false,
+              oid: oid,
+              rpid: rootId,
+              isVideoDetail: false,
+              replyType: type,
+              firstFloor: null,
+              id: rpId,
+            ),
+          ).constraintWidth(),
+        ),
       ),
     );
   }

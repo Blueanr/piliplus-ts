@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' show pi;
 
 import 'package:PiliPlus/common/skeleton/video_reply.dart';
@@ -18,7 +19,9 @@ import 'package:PiliPlus/utils/feed_back.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
 import 'package:PiliPlus/utils/storage.dart';
 import 'package:PiliPlus/utils/storage_key.dart';
+import 'package:PiliPlus/utils/utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -208,13 +211,18 @@ abstract class CommonDynPageState<T extends StatefulWidget> extends State<T>
         return child;
       }
 
-      if (isPortrait) {
-        Get.to(
-          replyReplyPage,
-          routeName: 'dynamicDetail-Copy',
-          arguments: arguments,
-        );
-      } else {
+      Future<void> openReplyPage() async {
+        final isIpad = await Utils.isIpad;
+        if (isPortrait || isIpad) {
+          await Navigator.of(context).push(
+            CupertinoPageRoute(
+              settings: const RouteSettings(name: 'dynamicDetail-Copy'),
+              builder: (context) => replyReplyPage(),
+            ),
+          );
+          return;
+        }
+
         final scaffoldState = Scaffold.maybeOf(context);
         if (scaffoldState != null) {
           hideFab();
@@ -223,13 +231,16 @@ abstract class CommonDynPageState<T extends StatefulWidget> extends State<T>
             (context) => replyReplyPage(showBackBtn: false),
           );
         } else {
-          Get.to(
-            replyReplyPage,
-            routeName: 'dynamicDetail-Copy',
-            arguments: arguments,
+          await Navigator.of(context).push(
+            CupertinoPageRoute(
+              settings: const RouteSettings(name: 'dynamicDetail-Copy'),
+              builder: (context) => replyReplyPage(),
+            ),
           );
         }
       }
+
+      unawaited(openReplyPage());
     });
   }
 

@@ -16,6 +16,7 @@ import 'package:PiliPlus/utils/feed_back.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -219,31 +220,32 @@ class _MainReplyPageState extends State<MainReplyPage>
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      Get.to(
-        Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text('评论详情'),
-            shape: Border(
-              bottom: BorderSide(
-                color: colorScheme.outline.withValues(alpha: 0.1),
+      Get.key.currentState!.push(
+        CupertinoPageRoute(
+          builder: (context) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('评论详情'),
+              shape: Border(
+                bottom: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: 0.1),
+                ),
               ),
             ),
+            body: ViewSafeArea(
+              child: VideoReplyReplyPanel(
+                enableSlide: false,
+                id: id,
+                oid: oid,
+                rpid: rpid,
+                isVideoDetail: false,
+                replyType: _controller.replyType,
+                firstFloor: replyItem,
+                upMid: _controller.upMid,
+              ),
+            ).constraintWidth(),
           ),
-          body: ViewSafeArea(
-            child: VideoReplyReplyPanel(
-              enableSlide: false,
-              id: id,
-              oid: oid,
-              rpid: rpid,
-              isVideoDetail: false,
-              replyType: _controller.replyType,
-              firstFloor: replyItem,
-              upMid: _controller.upMid,
-            ),
-          ).constraintWidth(),
         ),
-        routeName: 'dynamicDetail-Copy',
       );
     });
   }

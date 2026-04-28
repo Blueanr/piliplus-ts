@@ -17,6 +17,7 @@ import 'package:PiliPlus/utils/extension/get_ext.dart';
 import 'package:PiliPlus/utils/extension/widget_ext.dart';
 import 'package:PiliPlus/utils/page_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -197,28 +198,30 @@ class _MatchInfoPageState extends CommonDynPageState<MatchInfoPage> {
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      Get.to(
-        Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text('评论详情'),
-            shape: Border(
-              bottom: BorderSide(
-                color: theme.colorScheme.outline.withValues(alpha: 0.1),
+      Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('评论详情'),
+              shape: Border(
+                bottom: BorderSide(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.1),
+                ),
               ),
             ),
+            body: ViewSafeArea(
+              child: VideoReplyReplyPanel(
+                enableSlide: false,
+                id: id,
+                oid: oid,
+                rpid: rpid,
+                isVideoDetail: false,
+                replyType: controller.replyType,
+                firstFloor: replyItem,
+              ),
+            ).constraintWidth(),
           ),
-          body: ViewSafeArea(
-            child: VideoReplyReplyPanel(
-              enableSlide: false,
-              id: id,
-              oid: oid,
-              rpid: rpid,
-              isVideoDetail: false,
-              replyType: controller.replyType,
-              firstFloor: replyItem,
-            ),
-          ).constraintWidth(),
         ),
       );
     });
