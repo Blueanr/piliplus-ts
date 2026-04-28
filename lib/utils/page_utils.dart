@@ -31,7 +31,6 @@ import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/url_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:floating/floating.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -543,8 +542,8 @@ abstract final class PageUtils {
       return null;
     }
     return Get.key.currentState!.push(
-      _VideoSidePanelRoute<T>(
-        builder: (context) {
+      PublishRoute<T>(
+        pageBuilder: (context, animation, secondaryAnimation) {
           final panel = context.isPortrait
               ? FractionallySizedBox(
                   heightFactor: 0.7,
@@ -558,12 +557,27 @@ abstract final class PageUtils {
                       : child,
                 )
               : FractionallySizedBox(
-                  widthFactor: 0.5,
+                  widthFactor: Pref.videoSidePanelWidth,
                   heightFactor: 1.0,
                   alignment: Alignment.centerRight,
-                  child: child,
+                  child: _HorizontalSwipeToClose(child: child),
                 );
           return SafeArea(child: panel);
+        },
+        transitionDuration: const Duration(milliseconds: 350),
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          final begin = context.isPortrait
+              ? const Offset(0.0, 1.0)
+              : const Offset(1.0, 0.0);
+          return SlideTransition(
+            position: animation.drive(
+              Tween<Offset>(
+                begin: begin,
+                end: Offset.zero,
+              ).chain(CurveTween(curve: Curves.easeInOut)),
+            ),
+            child: child,
+          );
         },
         settings: RouteSettings(arguments: Get.arguments),
       ),
@@ -848,13 +862,22 @@ abstract final class PageUtils {
   }
 }
 
-class _VideoSidePanelRoute<T> extends CupertinoPageRoute<T> {
-  _VideoSidePanelRoute({
-    required super.builder,
-    super.settings,
-    super.fullscreenDialog = false,
-  });
+class _HorizontalSwipeToClose extends StatelessWidget {
+  const _HorizontalSwipeToClose({required this.child});
+
+  final Widget child;
 
   @override
-  bool get opaque => false;
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragEnd: (details) {
+        final velocity = details.primaryVelocity ?? 0;
+        if (velocity > 450) {
+          Navigator.of(context).maybePop();
+        }
+      },
+      child: child,
+    );
+  }
 }
