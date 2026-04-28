@@ -349,16 +349,23 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
       onReply: (replyItem) => _controller.onReply(replyItem, index: index),
       onDelete: (item, subIndex) => _controller.onRemove(index, item, null),
       upMid: _controller.upMid,
-      showDialogue: () => Scaffold.of(context).showBottomSheet(
-        backgroundColor: Colors.transparent,
-        constraints: const BoxConstraints(),
-        (context) => VideoReplyReplyPanel(
-          oid: replyItem.oid.toInt(),
-          rpid: replyItem.root.toInt(),
-          dialog: replyItem.dialog.toInt(),
-          replyType: widget.replyType,
-          isVideoDetail: true,
-          isNested: widget.isNested,
+      showDialogue: () => Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(title: const Text('对话列表')),
+            body: ViewSafeArea(
+              child: VideoReplyReplyPanel(
+                enableSlide: false,
+                oid: replyItem.oid.toInt(),
+                rpid: replyItem.root.toInt(),
+                dialog: replyItem.dialog.toInt(),
+                replyType: widget.replyType,
+                isVideoDetail: false,
+                isNested: widget.isNested,
+              ),
+            ).constraintWidth(),
+          ),
         ),
       ),
       jumpToDialogue: () {

@@ -62,6 +62,7 @@ import 'package:PiliPlus/utils/storage.dart';
 import 'package:PiliPlus/utils/storage_key.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:floating/floating.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
@@ -2099,16 +2100,18 @@ class _VideoDetailPageVState extends State<VideoDetailPageV>
   }
 
   void onShowMemberPage(int? mid) {
-    videoDetailController.childKey.currentState?.showBottomSheet(
-      shape: const RoundedRectangleBorder(),
-      constraints: const BoxConstraints(),
-      (context) {
-        return HorizontalMemberPage(
-          mid: mid,
-          videoDetailController: videoDetailController,
-          ugcIntroController: ugcIntroController,
-        );
-      },
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(title: const Text('UP详情')),
+          body: HorizontalMemberPage(
+            mid: mid,
+            videoDetailController: videoDetailController,
+            ugcIntroController: ugcIntroController,
+          ),
+        ),
+      ),
     );
   }
 }
