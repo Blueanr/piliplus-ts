@@ -14,6 +14,7 @@ import 'package:PiliPlus/pages/video/reply_reply/controller.dart';
 import 'package:PiliPlus/utils/app_scheme.dart';
 import 'package:PiliPlus/utils/extension/widget_ext.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
+import 'package:PiliPlus/utils/page_utils.dart';
 import 'package:PiliPlus/utils/utils.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:fixnum/fixnum.dart' show Int64;
@@ -349,23 +350,16 @@ class _VideoReplyReplyPanelState extends State<VideoReplyReplyPanel>
       onReply: (replyItem) => _controller.onReply(replyItem, index: index),
       onDelete: (item, subIndex) => _controller.onRemove(index, item, null),
       upMid: _controller.upMid,
-      showDialogue: () => Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(title: const Text('对话列表')),
-            body: ViewSafeArea(
-              child: VideoReplyReplyPanel(
-                enableSlide: false,
-                oid: replyItem.oid.toInt(),
-                rpid: replyItem.root.toInt(),
-                dialog: replyItem.dialog.toInt(),
-                replyType: widget.replyType,
-                isVideoDetail: false,
-                isNested: widget.isNested,
-              ),
-            ).constraintWidth(),
-          ),
+      showDialogue: () => PageUtils.showVideoBottomSheet(
+        context,
+        isFullScreen: () => false,
+        child: VideoReplyReplyPanel(
+          oid: replyItem.oid.toInt(),
+          rpid: replyItem.root.toInt(),
+          dialog: replyItem.dialog.toInt(),
+          replyType: widget.replyType,
+          isVideoDetail: true,
+          isNested: widget.isNested,
         ),
       ),
       jumpToDialogue: () {

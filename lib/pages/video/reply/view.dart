@@ -3,7 +3,6 @@ import 'package:PiliPlus/common/style.dart';
 import 'package:PiliPlus/common/widgets/flutter/refresh_indicator.dart';
 import 'package:PiliPlus/common/widgets/loading_widget/http_error.dart';
 import 'package:PiliPlus/common/widgets/sliver/sliver_floating_header.dart';
-import 'package:PiliPlus/common/widgets/view_safe_area.dart';
 import 'package:PiliPlus/grpc/bilibili/main/community/reply/v1.pb.dart'
     show ReplyInfo;
 import 'package:PiliPlus/http/loading_state.dart';
@@ -11,11 +10,10 @@ import 'package:PiliPlus/pages/common/fab_mixin.dart';
 import 'package:PiliPlus/pages/video/reply/controller.dart';
 import 'package:PiliPlus/pages/video/reply/widgets/reply_item_grpc.dart';
 import 'package:PiliPlus/pages/video/reply_reply/view.dart';
-import 'package:PiliPlus/utils/extension/widget_ext.dart';
 import 'package:PiliPlus/utils/feed_back.dart';
+import 'package:PiliPlus/utils/page_utils.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -241,27 +239,18 @@ class _VideoReplyPanelState extends State<VideoReplyPanel>
     EasyThrottle.throttle('replyReply', const Duration(milliseconds: 500), () {
       int oid = replyItem.oid.toInt();
       int rpid = replyItem.id.toInt();
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: (context) => Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: const Text('评论详情'),
-            ),
-            body: ViewSafeArea(
-              child: VideoReplyReplyPanel(
-                enableSlide: false,
-                id: id,
-                oid: oid,
-                rpid: rpid,
-                firstFloor: replyItem.replyControl.isNote ? null : replyItem,
-                replyType: _videoReplyController.videoType.replyType,
-                isVideoDetail: false,
-                isNested: widget.isNested,
-                upMid: _videoReplyController.upMid,
-              ),
-            ).constraintWidth(),
-          ),
+      PageUtils.showVideoBottomSheet(
+        context,
+        isFullScreen: () => false,
+        child: VideoReplyReplyPanel(
+          id: id,
+          oid: oid,
+          rpid: rpid,
+          firstFloor: replyItem.replyControl.isNote ? null : replyItem,
+          replyType: _videoReplyController.videoType.replyType,
+          isVideoDetail: true,
+          isNested: widget.isNested,
+          upMid: _videoReplyController.upMid,
         ),
       );
     });
